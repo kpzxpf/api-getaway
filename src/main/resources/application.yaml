@@ -9,31 +9,22 @@ spring:
     gateway:
       routes:
         - id: user-service
-          uri: lb://USER-SERVICE
+          uri: http://localhost:8081
           predicates:
             - Path=/api/users/**
-          filters:
-            - StripPrefix=2
-        - id: post-service
-          uri: lb://POST-SERVICE
+        - id: auth-service
+          uri: http://localhost:8082
           predicates:
-            - Path=/api/posts/**
-          filters:
-            - StripPrefix=2
+            - Path=/api/auth/**
 
   security:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: https://auth.example.com/.well-known/jwks.json
+          jwk-set-uri: http://localhost:8082/.well-known/jwks.json
 
 management:
   endpoints:
     web:
       exposure:
         include: health,gateway,metrics
-
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
